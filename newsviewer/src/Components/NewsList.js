@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
+import usePromise from '../lib/usePromise';
 import NewsItem from './NewsItem';
 
 const NewsListBlock = styled.div`
@@ -18,32 +19,25 @@ const NewsListBlock = styled.div`
 
 
 const NewsList = ({ category }) => {
-  const [articles, setArticles] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const query = category === 'all' ? '' : `&category=${category}`;
-        const response = await axios.get(
-          `http://newsapi.org/v2/top-headlines?country=kr${query}&apiKey=e899993defbb4f37908ff02d95450a0e`
+  const [loading, response, error] = usePromise(() => {
+    const query = category === 'all' ? '' : `&category=${category}`;
+    return axios.get(
+      `http://newsapi.org/v2/top-headlines?country=kr${query}&apiKey=e899993defbb4f37908ff02d95450a0e`
         )
-        setArticles(response.data.articles)
-      } catch (e) {
-        console.log(e);
-      }
-      setLoading(false);
-    }
-    fetchData();
-  }, [category]);
+  }, [category]) // useEffect에 등록하는 함수는 async로 작성하면 안된다. 그 대신 함수내부에 async를 만들어줘야한다.
 
-  if(loading) {
+
+  if (loading) {
     return null;
   }
-  if (!articles) {
+  if (!response) {
     return null;
   }
+  if (error) {
+    return <NewsListBlock>에러가 발생했어요</NewsListBlock>
+  }
+
+  const { articles } = response.data;
   return(
   <NewsListBlock>
     {articles.map(article => (
