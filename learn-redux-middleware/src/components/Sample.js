@@ -16,7 +16,7 @@ const Sample = ({ loadingPost, loadingUsers, post, users }) => {
       <hr/>
       <section>
         <h1>사용자 목록</h1>
-        {loadingUsers && 'loading...'}
+        {loadingUsers && 'Loading...'}
         {!loadingUsers && users && (
           <ul>
             {users.map(user => (

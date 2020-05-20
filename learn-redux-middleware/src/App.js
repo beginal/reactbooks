@@ -1,5 +1,5 @@
-import React from 'react'
-import SampleContainer from './components/SampleContainer'
+import React from 'react';
+import SampleContainer from './components/SampleContainer';
 
 const App = () => {
   return (
